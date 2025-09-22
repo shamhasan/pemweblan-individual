@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\PostController;
 use App\Models\Comment;
@@ -22,9 +23,9 @@ Route::get('/ping', function () {
 
 Route::post('/posts', [PostController::class, 'store']);
 // semua post
-Route::get('/posts', [PostController::class, 'index']);
-// detail 1 post
-Route::get('/posts/{post}', [PostController::class, 'show']);
+// Route::get('/posts', [PostController::class, 'index']);
+// // detail 1 post
+// Route::get('/posts/{post}', [PostController::class, 'show']);
 
 Route::put('/posts/{post}', [PostController::class, 'update']);
 Route::patch('/posts/{post}', [PostController::class, 'update']);
@@ -33,15 +34,35 @@ Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 
 
 // Create Comment
-Route::post('/posts/{post}/comments', [CommentController::class,
-'store']);
+Route::post('/posts/{post}/comments', [
+    CommentController::class,
+    'store'
+]);
 Route::post('/posts/comments', [CommentController::class, 'store']);
 // Read Comment
-Route::get('/posts/{post}/comments', [CommentController::class,
-'index']);
+Route::get('/posts/{post}/comments', [
+    CommentController::class,
+    'index'
+]);
 Route::get('/comments/{id}', [CommentController::class, 'showById']);
 // Update
 Route::put('/comments/{id}', [CommentController::class, 'update']);
 // Delete
-Route::delete('/comments/{id}', [CommentController::class,
-'destroy']);
+Route::delete('/comments/{id}', [
+    CommentController::class,
+    'destroy'
+]);
+
+
+// Register dan login
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
+    // semua post
+    Route::get('/posts', [PostController::class, 'index']);
+    // detail 1 post
+    Route::get('/posts/{post}', [PostController::class, 'show']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
